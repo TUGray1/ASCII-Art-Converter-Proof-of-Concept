@@ -30,7 +30,7 @@ __Do not close this terminal__
 Go to the fronted folder and right click on index.html and open in browser.
   - If you can't open this app in your browser try running this program in vscode with the Live Server extension installed.
 
-### Tech Stack
+## Tech Stack
 - python 3.11
 - HTML and js
 - OpenCV
