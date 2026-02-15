@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>ASCII Art POC</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            background: white;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+        }
+
+        .container {
+            text-align: center;
+            padding: 20px;
+        }
+
+        h1 {
+            font-size: 24px;
+            font-weight: normal;
+            color: #000;
+            margin-bottom: 30px;
+        }
+
+        input[type="file"] {
+            margin-bottom: 20px;
+        }
+
+        button {
+            padding: 10px 30px;
+            font-size: 16px;
+            background: white;
+            border: 1px solid black;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+
+        button:hover {
+            background: #f0f0f0;
+        }
+
+        #status {
+            margin: 20px 0;
+            font-size: 14px;
+            color: #666;
+        }
+
+        #output {
+            background: white;
+            color: black;
+            font-family: 'Courier New', monospace;
+            font-size: 8px;
+            line-height: 8px;
+            white-space: pre;
+            margin-top: 30px;
+            display: inline-block;
+            text-align: left;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Insert Image To Be Converted To ASCII </h1>
+        
+        <input type="file" id="imageInput" accept="image/*">
+        <br>
+        <button onclick="convertImage()">Convert to ASCII</button>
+        
+        <div id="status"></div>
+        
+        <pre id="output"></pre>
+    </div>
+
+    <script>
+        const SERVER_URL = 'http://localhost:5000';
+        
+        async function convertImage() {
+            const fileInput = document.getElementById('imageInput');
+            const file = fileInput.files[0];
+            
+            if (!file) {
+                document.getElementById('status').textContent = 'Pick an image to convert';
+                return;
+            }
+            
+            document.getElementById('status').textContent = 'Converting to ASCII...';
+            document.getElementById('output').textContent = '';
+            
+            const formData = new FormData();
+            formData.append('image', file);
+            
+            try {
+                const response = await fetch(`${SERVER_URL}/convert`, {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                const data = await response.json();
+                
+                if (data.success) {
+                    document.getElementById('output').textContent = data.ascii;
+                    document.getElementById('status').textContent = '';
+                } else {
+                    document.getElementById('status').textContent = 'Error: ' + data.error;
+                }
+                
+            } catch (error) {
+                document.getElementById('status').textContent = "Can't convert image";
+            }
+        }
+    </script>
+</body>
+</html>
